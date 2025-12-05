@@ -1,0 +1,52 @@
+service:
+  host: "localhost"
+  port: 8000
+  base_url: "http://localhost:8000"
+  endpoints:
+    health: "/health"
+    predict: "/predict"
+
+monitoring:
+  check_interval_seconds: 30
+  samples_per_check: 3
+  request_timeout_seconds: 10
+  inference_test_interval_minutes: 5
+
+thresholds:
+  response_time_ms:
+    warning: 2000
+    critical: 5000
+  p95_latency_ms:
+    warning: 3000
+    critical: 6000
+  error_rate_percent:
+    warning: 10
+    critical: 25
+  consecutive_failures:
+    warning: 3
+    critical: 5
+
+alerts:
+  enabled: true
+  cooldown_minutes: 5
+  notify_on:
+    - response_time
+    - error_rate
+    - consecutive_failures
+    - health_status
+
+logging:
+  console_colors: true
+  log_level: "INFO"
+  log_file: "logs/monitoring.log"
+  metrics_file: "logs/metrics.jsonl"
+  max_log_size_mb: 10
+  backup_count: 5
+
+inference_test:
+  enabled: true
+  test_image_path: "test_images/sample.jpg"
+  expected_fields:
+    - "filename"
+    - "result"
+    - "status_code"
